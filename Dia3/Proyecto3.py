@@ -1,3 +1,6 @@
+# ANALIZADOR DE TEXTO RECIBIDO, QUE BUSCA LA CANTIDAD 3 LETRAS RECIBIDAS POR EL USUARIO, DA LA LONGITUD DEL TEXTO, PRIMER Y ULTIMA LETRA,
+# RETORNA TEXTO AL REVES, BUSQUEDA DE PALABRA "PYTHON"
+
 text = input("Dame un texto a analizar: ")
 letra = []
 letras = input("Ingresa 3 letras a tu elección: ")
