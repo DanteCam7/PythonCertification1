@@ -22,7 +22,7 @@ nombre = input("Tu nombre: ")
 
 for letra in nombre:
     if letra == 'r':
-        continue #break
+        break#continue #break
     print(letra)
 
 numero = 50
