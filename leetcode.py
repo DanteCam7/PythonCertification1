@@ -80,7 +80,7 @@ for l in s:
     if l == 'a' or l == 'e' or l == 'i' or l == 'u' or l == 'o':
         lista2.append(l)
 length = len(lista2)
-print(lista2[length-1])
+#print(lista2[length-1])
 i = 0
 while length != 0:
     word1 = list(s)
@@ -116,4 +116,18 @@ while start < end:
     end -= 1
     #print(f"iteracion{end}" )
 
-print("".join(word))
+#print("".join(word))
+
+
+s = " the sky is blue "
+phrase = list(s)
+reverse = s.split(" ")
+print(reverse)
+reverse2 = []
+for l in reverse:
+    if l == "":
+        pass
+    else:
+        reverse2.insert(0,l)
+print(" ".join(reverse2))
+
