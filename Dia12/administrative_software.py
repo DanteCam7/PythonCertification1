@@ -1,5 +1,28 @@
 from tkinter import *
 
+operator = ''
+
+
+def click_button(number):
+    global operator
+    operator = operator + number
+    calculator_viewer.delete(0, END)
+    calculator_viewer.insert(END, operator)
+
+
+def get_result():
+    global operator
+    result = str(eval(operator))
+    calculator_viewer.delete(0, END)
+    calculator_viewer.insert(0, result)
+    operator = ''
+
+
+def delete():
+    global operator
+    operator = ''
+    calculator_viewer.delete(0, END)
+
 
 def center_window(window):
     """
@@ -60,17 +83,17 @@ dessert_dashboard.pack(side=LEFT)
 right_panel = Frame(application, bd=1, relief=FLAT)
 right_panel.pack(side=RIGHT)
 
-# calculator panel
-calculator_panel = Frame(right_panel, bd=1, relief=FLAT, bg='DarkGray')
-calculator_panel.pack(side=RIGHT)
+# calculator dashboard
+calculator_dashboard = Frame(right_panel, bd=1, relief=FLAT, bg='DarkGray')
+calculator_dashboard.pack()
 
-# billing panel
-billing_panel = Frame(right_panel, bd=1, relief=FLAT, bg='DarkGray')
-billing_panel.pack(side=RIGHT)
+# billing dashboard
+billing_dashboard = Frame(right_panel, bd=1, relief=FLAT, bg='DarkGray')
+billing_dashboard.pack()
 
-# button panel
-button_panel = Frame(right_panel, bd=1, relief=FLAT, bg='DarkGray')
-button_panel.pack(side=RIGHT)
+# button dashboard
+button_dashboard = Frame(right_panel, bd=1, relief=FLAT, bg='DarkGray')
+button_dashboard.pack()
 
 # products list
 food_list = ['Chicken', 'Meat', 'Wagyu', 'Kebab', 'Sushi', 'Ramen', 'Pizza', 'Carbonara']
@@ -274,6 +297,89 @@ total_text = Entry(costs_dashboard,
                    state='readonly',
                    textvariable=total_var)
 total_text.grid(row=2, column=3, padx=41)
+
+# buttons
+buttons = ['total', 'billing', 'save', 'reset']
+columns = 0
+for button in buttons:
+    button = Button(button_dashboard,
+                    text=button.title(),
+                    font=('Dosis', 12, 'bold'),
+                    fg='white',
+                    bg='azure4',
+                    bd=1,
+                    width=8)
+
+    button.grid(row=0,
+                column=columns)
+    columns += 1
+
+# billing
+billing_text = Text(billing_dashboard,
+                    font=('Dosis', 11, 'bold'),
+                    bd=1,
+                    width=42,
+                    height=10)
+billing_text.grid(row=0,
+                  column=0)
+
+# calculator
+calculator_viewer = Entry(calculator_dashboard,
+                          font=('Dosis', 14, 'bold'),
+                          width=32,
+                          bd=1)
+calculator_viewer.grid(row=0,
+                       column=0,
+                       columnspan=4)
+
+calculator_buttons = ['7', '8', '9', '+',
+                      '4', '5', '6', '-',
+                      '1', '2', '3', 'x',
+                      'R', 'E', '0', '/']
+
+saved_buttons = []
+
+row = 1
+column = 0
+
+for button in calculator_buttons:
+    button = Button(calculator_dashboard,
+                    text=button.title(),
+                    font=('Dosis', 13, 'bold'),
+                    fg='white',
+                    bg='azure4',
+                    bd=1,
+                    width=7)
+    saved_buttons.append(button)
+
+    button.grid(row=row,
+                column=column)
+
+    if column == 3:
+        row += 1
+
+    column += 1
+
+    if column == 4:
+        column = 0
+
+saved_buttons[0].config(command=lambda: click_button('7'))
+saved_buttons[1].config(command=lambda: click_button('8'))
+saved_buttons[2].config(command=lambda: click_button('9'))
+saved_buttons[3].config(command=lambda: click_button('+'))
+saved_buttons[4].config(command=lambda: click_button('4'))
+saved_buttons[5].config(command=lambda: click_button('5'))
+saved_buttons[6].config(command=lambda: click_button('6'))
+saved_buttons[7].config(command=lambda: click_button('-'))
+saved_buttons[8].config(command=lambda: click_button('1'))
+saved_buttons[9].config(command=lambda: click_button('2'))
+saved_buttons[10].config(command=lambda: click_button('3'))
+saved_buttons[11].config(command=lambda: click_button('*'))
+saved_buttons[12].config(command=get_result)
+saved_buttons[13].config(command=delete)
+saved_buttons[14].config(command=lambda: click_button('0'))
+saved_buttons[15].config(command=lambda: click_button('/'))
+
 
 # keep the window open
 application.mainloop()
