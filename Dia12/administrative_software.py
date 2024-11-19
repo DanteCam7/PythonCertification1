@@ -1,6 +1,12 @@
 from tkinter import *
+import random
+import datetime
+from tkinter import filedialog, messagebox
 
 operator = ''
+food_prices = [1.32, 1.65, 2.31, 3.22, 1.22, 1.99, 2.05, 2.65]
+drink_prices = [0.25, 0.99, 1.21, 1.54, 1.08, 1.10, 2.00, 1.58]
+dessert_prices = [1.54, 1.68, 1.32, 1.97, 2.55, 2.14, 1.94, 1.74]
 
 
 def click_button(number):
@@ -18,10 +24,156 @@ def get_result():
     operator = ''
 
 
+def revisar_check():
+    x = 0
+    for c in food_box:
+        if food_variables[x].get() == 1:
+            food_box[x].config(state=NORMAL)
+            if food_box[x].get() == '0':
+                food_box[x].delete(0, END)
+                food_box[x].focus()
+        else:
+            food_box[x].config(state=DISABLED)
+            food_text[x].set('0')
+        x += 1
+    x = 0
+    for c in drink_box:
+        if drink_variables[x].get() == 1:
+            drink_box[x].config(state=NORMAL)
+            if drink_box[x].get() == '0':
+                drink_box[x].delete(0, END)
+                drink_box[x].focus()
+        else:
+            drink_box[x].config(state=DISABLED)
+            drink_text[x].set('0')
+        x += 1
+    x = 0
+    for c in dessert_box:
+        if dessert_variables[x].get() == 1:
+            dessert_box[x].config(state=NORMAL)
+            if dessert_box[x].get() == '0':
+                dessert_box[x].delete(0, END)
+                dessert_box[x].focus()
+        else:
+            dessert_box[x].config(state=DISABLED)
+            dessert_text[x].set('0')
+        x += 1
+
+
 def delete():
     global operator
     operator = ''
     calculator_viewer.delete(0, END)
+
+
+def total():
+    sub_total_food = 0
+    p = 0
+    for quantity in food_text:
+        sub_total_food = sub_total_food + (float(quantity.get()) * food_prices[p])
+        p += 1
+
+    sub_total_drink = 0
+    p = 0
+    for quantity in drink_text:
+        sub_total_drink = sub_total_drink + (float(quantity.get()) * drink_prices[p])
+        p += 1
+
+    sub_total_dessert = 0
+    p = 0
+    for quantity in dessert_text:
+        sub_total_dessert = sub_total_dessert + (float(quantity.get()) * dessert_prices[p])
+        p += 1
+
+    sub_total = sub_total_food + sub_total_drink + sub_total_dessert
+    taxes = sub_total * .16
+    total1 = sub_total + taxes
+
+    food_cost_var.set(f'{round(sub_total_food, 2)}')
+    drink_cost_var.set(f'{round(sub_total_drink, 2)}')
+    dessert_cost_var.set(f'{round(sub_total_dessert, 2)}')
+    subtotal_var.set(f'{round(sub_total, 2)}')
+    taxes_var.set(f'{round(taxes, 2)}')
+    total_var.set(f'{round(total1, 2)}')
+
+
+def receipt():
+    billing_text.delete(1.0, END)
+    num_receipt = f'N# - {random.randint(1000,9999)}'
+    date = datetime.datetime.now()
+    date_receipt = f'{date.day}/{date.month}/{date.year} - {date.hour}:{date.minute}'
+    billing_text.insert(END, f'Datos:\t{num_receipt}\t\t{date_receipt}\n')
+    billing_text.insert(END, f'*'*52+'\n')
+    billing_text.insert(END, f'Items\t\tQuantity\t   Items Cost\n')
+    billing_text.insert(END, f'-'*54+'\n')
+
+    x = 0
+    for food in food_text:
+        if food.get() != '0':
+            billing_text.insert(END, f'{food_list[x]}\t\t      {food.get()}\t      ${int(food.get())*food_prices[x]}\n')
+        x += 1
+
+    x = 0
+    for drink in drink_text:
+        if drink.get() != '0':
+            billing_text.insert(END, f'{drink_list[x]}\t\t      {drink.get()}\t      ${int(drink.get()) * drink_prices[x]}\n')
+        x += 1
+
+    x = 0
+    for dessert in dessert_text:
+        if dessert.get() != '0':
+            billing_text.insert(END, f'{dessert_list[x]}\t\t      {dessert.get()}\t      ${int(dessert.get()) * dessert_prices[x]}\n')
+        x += 1
+
+    billing_text.insert(END, f'-'*54+'\n')
+    billing_text.insert(END, f'Cost of the Food: \t\t\t{food_cost_var.get()}\n')
+    billing_text.insert(END, f'Cost of the Drink: \t\t\t{drink_cost_var.get()}\n')
+    billing_text.insert(END, f'Cost of the Dessert: \t\t\t{dessert_cost_var.get()}\n')
+    billing_text.insert(END, f'-' * 54 + '\n')
+    billing_text.insert(END, f'Sub-total: \t\t\t{subtotal_var.get()}\n')
+    billing_text.insert(END, f'Taxes: \t\t\t{taxes_var.get()}\n')
+    billing_text.insert(END, f'Total: \t\t\t{total_var.get()}\n')
+    billing_text.insert(END, f'*' * 52 + '\n')
+    billing_text.insert(END, f'Thank you for your visit')
+
+
+def save():
+    receipt_info = billing_text.get(1.0, END)
+    archive = filedialog.asksaveasfile(mode='w', defaultextension='.txt')
+    archive.write(receipt_info)
+    archive.close()
+    messagebox.showinfo('Information', 'The receipt saved succesfully')
+
+
+def reset():
+    billing_text.delete(0.1, END)
+    for text in food_text:
+        text.set('0')
+    for text in drink_text:
+        text.set('0')
+    for text in dessert_text:
+        text.set('0')
+
+    for box in food_box:
+        box.config(state=DISABLED)
+    for box in drink_box:
+        box.config(state=DISABLED)
+    for box in dessert_box:
+        box.config(state=DISABLED)
+
+    for v in food_variables:
+        v.set(0)
+    for v in drink_variables:
+        v.set(0)
+    for v in dessert_variables:
+        v.set(0)
+
+    food_cost_var.set('')
+    drink_cost_var.set('')
+    dessert_cost_var.set('')
+    subtotal_var.set('')
+    taxes_var.set('')
+    total_var.set('')
 
 
 def center_window(window):
@@ -114,7 +266,8 @@ for food in food_list:
                        font=('Dosis', 17, 'bold'),
                        onvalue=1,
                        offvalue=0,
-                       variable=food_variables[index])
+                       variable=food_variables[index],
+                       command=revisar_check)
     food.grid(row=index, column=0, sticky=W)
 
     # create input box
@@ -146,7 +299,8 @@ for drink in drink_list:
                         font=('Dosis', 17, 'bold'),
                         onvalue=1,
                         offvalue=0,
-                        variable=drink_variables[index])
+                        variable=drink_variables[index],
+                        command=revisar_check)
     drink.grid(row=index, column=0, sticky=W)
 
     # create input box
@@ -173,8 +327,13 @@ for dessert in dessert_list:
     # create checkbutton
     dessert_variables.append('')
     dessert_variables[index] = IntVar()
-    dessert = Checkbutton(dessert_dashboard, text=dessert.title(), font=('Dosis', 17, 'bold'),
-                          onvalue=1, offvalue=0, variable=dessert_variables[index])
+    dessert = Checkbutton(dessert_dashboard,
+                          text=dessert.title(),
+                          font=('Dosis', 17, 'bold'),
+                          onvalue=1,
+                          offvalue=0,
+                          variable=dessert_variables[index],
+                          command=revisar_check)
     dessert.grid(row=index, column=0, sticky=W)
 
     # create input box
@@ -300,6 +459,7 @@ total_text.grid(row=2, column=3, padx=41)
 
 # buttons
 buttons = ['total', 'billing', 'save', 'reset']
+buttons_created = []
 columns = 0
 for button in buttons:
     button = Button(button_dashboard,
@@ -310,9 +470,16 @@ for button in buttons:
                     bd=1,
                     width=8)
 
+    buttons_created.append(button)
+
     button.grid(row=0,
                 column=columns)
     columns += 1
+
+buttons_created[0].config(command=total)
+buttons_created[1].config(command=receipt)
+buttons_created[2].config(command=save)
+buttons_created[3].config(command=reset)
 
 # billing
 billing_text = Text(billing_dashboard,
